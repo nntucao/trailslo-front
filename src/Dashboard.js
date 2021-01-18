@@ -22,9 +22,8 @@ const useStyle = makeStyles((theme) => ({
 
 function Dashboard() {
   const classes = useStyle();
-  const [data, setData] = useState(store);
   const [dataAxios, setDataAxios] = useState([]);
-  //const urlAPI = 'https://trailslo.herokuapp.com/api/v1/task_lists';
+  //const urlAPI = 'https://trailslo.herokuapp.com/';
   const urlLocal = 'http://localhost:3001/';
   useEffect(() => {
     const getTaskLists = async () => {
@@ -57,6 +56,7 @@ function Dashboard() {
       is_archived: false,
       position_in_tasklist: ''
     };
+    console.log('card id while adding: ', newCard.id)
     const listAxios = dataAxios[listId - 1]; //numerotation of list id begins with 1 otherwise the table begins with 0
     listAxios.task_cards = [...listAxios.task_cards, newCard];
 
@@ -65,13 +65,14 @@ function Dashboard() {
       responseType: 'json',
       data: {
         'task_card': {
+          task_list_id: listId,
           name: title,
           due_date: null,
           is_archived: false,
           position_in_tasklist: ''
         }
       },
-      url: `${urlLocal} + 'api/v1/task_lists/${listId}/task_cards`,
+      url: `http://localhost:3001/api/v1/task_lists/${listId}/task_cards`,
       validateStatus: (status) => {
         return true;
       },
@@ -107,7 +108,7 @@ function Dashboard() {
           task_cards: []
         }
       },
-      url:  `${urlLocal} + 'api/v1/task_lists`,
+      url:  `http://localhost:3001/api/v1/task_lists`,
       validateStatus: (status) => {
         return true;
       },
@@ -143,10 +144,8 @@ function Dashboard() {
     }
   }
   const updateListTitle = (title, listId) => {
-    const list = dataAxios[listId-1]; 
-    console.log('list to update ', list);
-    list.name = title;
-    const newState = [...dataAxios, list]; 
+    dataAxios[listId-1].name = title;
+    const newState = [...dataAxios]; 
     setDataAxios(newState);
     axios({
       method: 'put',
@@ -156,7 +155,7 @@ function Dashboard() {
           name: title
         }
       },
-      url: `${urlLocal} + 'api/v1/task_lists/${listId}`,
+      url: `http://localhost:3001/api/v1/task_lists/${listId}`,
       validateStatus: (status) => {
         return true;
       },
@@ -168,12 +167,32 @@ function Dashboard() {
         console.log('error put request ', error);
       });
   }
+
+  const deleteCard = (listId, cardId) => {
+    dataAxios[listId - 1].task_cards = dataAxios[listId - 1].task_cards.filter((card) => card.id !== cardId); 
+    const newState = [...dataAxios];
+    setDataAxios(newState); 
+
+    axios({
+      method: 'delete',
+      responseType: 'json',
+      url: `http://localhost:3001/api/v1/task_lists/${listId}/task_cards/${cardId}`,
+      validateStatus: (status) => {
+        return true;
+      },
+    })
+      .then(function (response) {
+        console.log('response delete card request ', response);
+      })
+      .catch(function (error) {
+        console.log('error delete card request ', error);
+      });
+  }
+
   return (
-    
-    <storeAPI.Provider value={{ addMoreCard, addMoreList, updateListTitle }}>
-      
+    <storeAPI.Provider value={{ addMoreCard, addMoreList, updateListTitle, deleteCard }}>
       <TopBar />
-      <DragDropContext onDragEnd={onDragEnd}>
+      {/* <DragDropContext onDragEnd={onDragEnd}> */}
         <div className={classes.root}>
           {console.log('data after btn clicked: ', dataAxios)}
           {dataAxios.map(task_list => { return <List list={task_list} key={task_list.id} /> })}
@@ -181,7 +200,7 @@ function Dashboard() {
           </div>
           <InputContainer type='list' />
         </div>
-      </DragDropContext>
+      {/* </DragDropContext> */}
     </storeAPI.Provider>
   );
 }

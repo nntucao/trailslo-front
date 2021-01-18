@@ -12,10 +12,13 @@ const clientId =
 function Login() {
   const onSuccess = (res) => {
     console.log('Login Success: currentUser:', res.profileObj);
-    alert(
+    let answser = alert(
       `Logged in successfully welcome ${res.profileObj.name} 😍. \n`
     );
-    refreshTokenSetup(res);
+    if (answser) {
+      window.location="http://localhost:3000/dashboard";
+    }
+    //refreshTokenSetup(res);
   };
 
   const onFailure = (res) => {

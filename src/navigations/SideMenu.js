@@ -12,9 +12,6 @@ import MenuList from '@material-ui/core/MenuList';
 import { Person } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
-    drawer: {
-        width: '400px'
-    },
     root: {
         display: 'flex',
     },

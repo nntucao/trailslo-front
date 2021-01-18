@@ -24,10 +24,10 @@ function Dashboard() {
   const classes = useStyle();
   const [dataAxios, setDataAxios] = useState([]);
   //const urlAPI = 'https://trailslo.herokuapp.com/';
-  const urlLocal = 'http://localhost:3001/';
+  //const urlLocal = 'http://localhost:3001/';
   useEffect(() => {
     const getTaskLists = async () => {
-      await axios.get(urlLocal + 'api/v1/task_lists')
+      await axios.get('https://trailslo.herokuapp.com/api/v1/task_lists')
         .then((resp) => {
           const lists = resp.data.map((list) => (
             {
@@ -72,7 +72,7 @@ function Dashboard() {
           position_in_tasklist: ''
         }
       },
-      url: `http://localhost:3001/api/v1/task_lists/${listId}/task_cards`,
+      url: `https://trailslo.herokuapp.com/api/v1/task_lists/${listId}/task_cards`,
       validateStatus: (status) => {
         return true;
       },
@@ -108,7 +108,7 @@ function Dashboard() {
           task_cards: []
         }
       },
-      url:  `http://localhost:3001/api/v1/task_lists`,
+      url:  `https://trailslo.herokuapp.com/api/v1/task_lists`,
       validateStatus: (status) => {
         return true;
       },
@@ -155,7 +155,7 @@ function Dashboard() {
           name: title
         }
       },
-      url: `http://localhost:3001/api/v1/task_lists/${listId}`,
+      url: `https://trailslo.herokuapp.com/api/v1/task_lists/${listId}`,
       validateStatus: (status) => {
         return true;
       },
@@ -176,7 +176,7 @@ function Dashboard() {
     axios({
       method: 'delete',
       responseType: 'json',
-      url: `http://localhost:3001/api/v1/task_lists/${listId}/task_cards/${cardId}`,
+      url: `https://trailslo.herokuapp.com/api/v1/task_lists/${listId}/task_cards/${cardId}`,
       validateStatus: (status) => {
         return true;
       },

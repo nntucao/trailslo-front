@@ -39,6 +39,10 @@ export default function SideMenu() {
         setOpen(false);
     };
 
+    const handleLogOut = () => {
+
+    }
+
     function handleListKeyDown(event) {
         if (event.key === 'Tab') {
             event.preventDefault();
@@ -76,7 +80,7 @@ export default function SideMenu() {
                                     <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                        <MenuItem onClick={() => handleLogOut()}>Logout</MenuItem>
                                     </MenuList>
                                 </ClickAwayListener>
                             </Paper>

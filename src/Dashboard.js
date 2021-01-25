@@ -21,14 +21,20 @@ const useStyle = makeStyles((theme) => ({
 }))
 
 function Dashboard() {
+  
   const classes = useStyle();
   const [dataAxios, setDataAxios] = useState([]);
-  //const [googleUser, setGoogleUser] = localStorage.getItem('googleUser name'); 
+  // const { board_id } = this.props.match.params; 
+  // const { boardId } = this.props.location.state;
+  const userId = localStorage.getItem('userId');
+
+  //const [userId, setGoogleUser] = localStorage.getItem('userId'); 
 
   //const urlAPI = `https://trailslo.herokuapp.com/`;
-  const urlLocal = `http://localhost:3001/api/v1/users/1/boards/1/`;
+  const urlLocal = `http://localhost:3001/api/v1/users/${userId}/boards/1/`;
 
   useEffect(() => {
+    console.log('now go to dashboard: ')
     const getTaskLists = async () => {
       await axios.get(urlLocal + `task_lists`)
         .then((resp) => {
@@ -172,7 +178,6 @@ function Dashboard() {
         console.log('error put request ', error);
       });
   }
-
   const deleteCard = (listId, cardId) => {
     dataAxios[listId - 1].task_cards = dataAxios[listId - 1].task_cards.filter((card) => card.id !== cardId);
     const newState = [...dataAxios];
@@ -193,7 +198,6 @@ function Dashboard() {
         console.log('error delete card request ', error);
       });
   }
-
   const getUserInfo = (res) => {
     console.log('google id from dashboard: ', res);
   }

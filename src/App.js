@@ -66,7 +66,7 @@ export default function App() {
     <Router>
       <Switch>
         <Route exact path='/' component={Home} ></Route>
-        <Route path='/dashboard' component={Dashboard}></Route>
+        <Route path='/dashboard/' component={Dashboard}></Route>
       </Switch>
     </Router>
   );
@@ -92,11 +92,11 @@ const Home = () => {
           <div className={classes.loginSpace}>
             <Users />
           </div>
-          <nav>
+          {/* <nav>
             <ul>
               <Link to='/dashboard'><li>Dashboard</li></Link>
             </ul>
-          </nav>
+          </nav> */}
         </div>
       </Grid>
     </Grid>

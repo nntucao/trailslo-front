@@ -2,6 +2,7 @@ import { Button, InputBase, Paper, IconButton } from '@material-ui/core'
 import { makeStyles, fade } from '@material-ui/core/styles'
 import React, { useContext, useState } from 'react'
 import storeAPI from '../../utils/storeAPI';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyle = makeStyles((theme) => ({
     card: {
@@ -65,7 +66,7 @@ export default function InputCard({ setOpen, listId, type }) {
                 <Button className={classes.btnConfirm}
                     onClick={handleBtnConfirm}>
                     {type === 'card' ? 'Add a card' : 'Add a list'}</Button>
-                <IconButton onClick={() => setOpen(false)}> <IconButton /> </IconButton>
+                <ClearIcon onClick={() => setOpen(false)}>  </ClearIcon>
             </div>
         </div>
     )

@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Dashboard from "./Dashboard";
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Users from './management/Users';
 
 function Copyright() {
   return (
@@ -55,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  loginSpace: {
+    margin: theme.spacing(2)
+  }
 }));
 
 export default function App() {
@@ -82,9 +86,12 @@ const Home = () => {
           <Typography component="h1" variant="h5">
             Trailslo
           </Typography>
-          <Box>
+          <div className={classes.loginSpace}> 
             <Login />
-          </Box>
+          </div>
+          <div className={classes.loginSpace}>
+            <Users />
+          </div>
           <nav>
             <ul>
               <Link to='/dashboard'><li>Dashboard</li></Link>

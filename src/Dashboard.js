@@ -9,8 +9,9 @@ import store from './utils/store';
 import storeAPI from './utils/storeAPI';
 import { DragDropContext } from 'react-beautiful-dnd';
 import TopBar from './navigations/TopBar';
+import {useLocation} from "react-router-dom";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles((theme) =>   ({
   root: {
     display: 'flex',
     minHeight: '100vh',
@@ -20,18 +21,17 @@ const useStyle = makeStyles((theme) => ({
   }
 }))
 
-function Dashboard() {
-  
+function Dashboard(props) {
   const classes = useStyle();
   const [dataAxios, setDataAxios] = useState([]);
-  // const { board_id } = this.props.match.params; 
-  // const { boardId } = this.props.location.state;
+  let dataFromLogin = useLocation(); 
+  let board_id = dataFromLogin.state.board_id; 
   const userId = localStorage.getItem('userId');
 
   //const [userId, setGoogleUser] = localStorage.getItem('userId'); 
 
   //const urlAPI = `https://trailslo.herokuapp.com/`;
-  const urlLocal = `http://localhost:3001/api/v1/users/${userId}/boards/1/`;
+  const urlLocal = `http://localhost:3001/api/v1/users/3/boards/${board_id}/`;
 
   useEffect(() => {
     console.log('now go to dashboard: ')

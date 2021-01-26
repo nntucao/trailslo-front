@@ -29,10 +29,10 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    height: '100vh'
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    // backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -57,7 +57,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   loginSpace: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(4),
+    float: 'right'
   }
 }));
 
@@ -86,17 +87,10 @@ const Home = () => {
           <Typography component="h1" variant="h5">
             Trailslo
           </Typography>
-          <div className={classes.loginSpace}> 
+          <Users />
+          <div className={classes.loginSpace}>
             <Login />
           </div>
-          <div className={classes.loginSpace}>
-            <Users />
-          </div>
-          {/* <nav>
-            <ul>
-              <Link to='/dashboard'><li>Dashboard</li></Link>
-            </ul>
-          </nav> */}
         </div>
       </Grid>
     </Grid>

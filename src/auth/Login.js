@@ -6,12 +6,14 @@ import { GoogleLogin } from 'react-google-login';
 import { refreshTokenSetup } from '../utils/refreshToken';
 import { Button } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
+import { IconButton } from '@material-ui/core';
+import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList';
 
 const clientId =
   '628527638852-jv08cufh46kjretiuvb70n4cmrdptfr1.apps.googleusercontent.com';
 
 const useStyles = makeStyles((theme) => ({
-  loginSpace: {
+  boardsSpace: {
     margin: theme.spacing(2)
   }
 }));
@@ -35,7 +37,8 @@ export default function Login() {
       //retrieveUser(idUser); 
       retrieveUserBoards(idUser);
     } else {
-      //createUser();
+      createUser(res.profileObj.email);
+      
     }
 
     refreshTokenSetup(res);
@@ -66,8 +69,8 @@ export default function Login() {
   };
 
   const retrieveUserBoards = async (idUser) => {
-    console.log('start retrieving user: ', idUser);
-    await axios.get(`http://localhost:3001/api/v1/users/1/boards`)
+    console.log('start retrieving user boards:  ', idUser);
+    await axios.get(`http://localhost:3001/api/v1/users/${idUser}/boards`)
       .then((resp) => {
         const boards = resp.data.map((board) => (
           {
@@ -85,18 +88,46 @@ export default function Login() {
       });
   };
 
+  const createUser = (email) => {
+    console.log('start creating user: ');
+    axios({
+      method: 'post',
+      responseType: 'json',
+      data: {
+        'user': {
+          email: email
+        }
+      },
+      url: `http://localhost:3001/api/v1/users`,
+      validateStatus: (status) => {
+        return true;
+      },
+    })
+      .then(function (response) {
+        console.log('response post user request ', response);
+        setUserId(response.data.id);
+      })
+      .catch(function (error) {
+        console.log('error post user request ', error);
+      });
+  }
+
+  const chooseToCreateBoards = () => {
+   
+  }
+
   return (
     <div>
       <div>
         <Router>
           <Switch>
             {/* <Route exact path='/' component={App} ></Route> */}
-            <Route path='/:board_id' component={Dashboard}></Route>
+            <Route path='/dashboard/:board_id' component={Dashboard}></Route>
           </Switch>
         </Router>
       </div>
       <div>
-        { userId ? null :
+        {userId ? null :
           <GoogleLogin
             clientId={clientId}
             buttonText="Login"
@@ -108,21 +139,36 @@ export default function Login() {
           />
         }
         <div>
+          {console.log('boards while entering login: ', userBoards)}
           {
-            userBoards.map((board) => (
-              <nav>
-                <ul>
-                  {console.log("board: ", board)}
-                  <Link className={classes.loginSpace}
-                    to={{
-                      pathname: '/dashboard',
-                      state: {
-                        boardId: board.id
-                      }
-                    }}><li>{board.name}</li></Link>
-                </ul>
-              </nav>
-            ))
+            (userBoards.length > 0) ?
+              (userBoards.map((board) => (
+                <nav>
+                  <ul>
+                    {console.log("board: ", board)}
+                    <Button component={Link} className={classes.boardsSpace} variant="contained" color="primary"
+                      to={{
+                        pathname: '/dashboard',
+                        state: {
+                          board_id: board.id
+                        }
+                      }}>{board.name}
+                    </Button>
+                  </ul>
+                </nav>
+              )))
+              :
+              (
+                <Button
+                  component={Link}
+                  className={classes.boardsSpace}
+                  variant="contained" color="primary"
+                  to={{
+                    pathname: '/dashboard',
+                  }}>
+                  Create New Board
+                </Button>
+              )
           }
         </div>
       </div>

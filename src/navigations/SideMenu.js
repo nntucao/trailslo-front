@@ -10,6 +10,10 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { Person } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import FaceIcon from '@material-ui/icons/Face';
+import { useGoogleLogout } from 'react-google-login';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,11 +21,14 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         marginRight: theme.spacing(2),
-    }, 
+    },
     btnUser: {
-        background: 'white'   
+        background: 'white'
     }
 }));
+
+const clientId =
+    '628527638852-jv08cufh46kjretiuvb70n4cmrdptfr1.apps.googleusercontent.com';
 
 export default function SideMenu() {
     const classes = useStyles();
@@ -39,9 +46,20 @@ export default function SideMenu() {
         setOpen(false);
     };
 
-    const handleLogOut = () => {
+    const onLogoutSuccess = (res) => {
+        console.log('Logged out Success');
+        alert('Logged out Successfully ✌');
+    };
 
-    }
+    const onFailure = () => {
+        console.log('Handle failure cases');
+    };
+
+    const { signOut } = useGoogleLogout({
+        clientId,
+        onLogoutSuccess,
+        onFailure,
+    });
 
     function handleListKeyDown(event) {
         if (event.key === 'Tab') {
@@ -62,13 +80,15 @@ export default function SideMenu() {
     return (
         <div>
             <div>
-                <Button className={classes.btnUser}
-                    ref={anchorRef}
-                    aria-controls={open ? 'menu-list-grow' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleToggle}>
-                    User
-                </Button>
+                <div>
+                    <IconButton className={classes.btnUser}
+                        ref={anchorRef}
+                        aria-controls={open ? 'menu-list-grow' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleToggle} >
+                        <FaceIcon />
+                    </IconButton>
+                </div>
                 <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
@@ -78,9 +98,11 @@ export default function SideMenu() {
                             <Paper>
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                                        <MenuItem onClick={() => handleLogOut()}>Logout</MenuItem>
+                                        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                        <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                                        <MenuItem onClick={() => signOut()}>
+                                            <ExitToAppIcon /> Logout
+                                        </MenuItem>
                                     </MenuList>
                                 </ClickAwayListener>
                             </Paper>

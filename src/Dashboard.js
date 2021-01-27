@@ -15,7 +15,7 @@ const useStyle = makeStyles((theme) =>   ({
   root: {
     display: 'flex',
     minHeight: '100vh',
-    background: 'green',
+    background: '#ff795c',
     width: '100%',
     overflowY: 'auto'
   }
@@ -26,15 +26,16 @@ function Dashboard(props) {
   const [dataAxios, setDataAxios] = useState([]);
   let dataFromLogin = useLocation(); 
   let board_id = dataFromLogin.state.board_id; 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('idUser');
 
   //const [userId, setGoogleUser] = localStorage.getItem('userId'); 
 
   //const urlAPI = `https://trailslo.herokuapp.com/`;
-  const urlLocal = `http://localhost:3001/api/v1/users/3/boards/${board_id}/`;
+  const urlLocal = `http://localhost:3001/api/v1/users/${userId}/boards/${board_id}/`;
 
   useEffect(() => {
     console.log('now go to dashboard: ')
+    console.log('localStorage in Dashboard: ', localStorage);
     const getTaskLists = async () => {
       await axios.get(urlLocal + `task_lists`)
         .then((resp) => {
@@ -198,12 +199,9 @@ function Dashboard(props) {
         console.log('error delete card request ', error);
       });
   }
-  const getUserInfo = (res) => {
-    console.log('google id from dashboard: ', res);
-  }
 
   return (
-    <storeAPI.Provider value={{ addMoreCard, addMoreList, updateListTitle, deleteCard, getUserInfo }}>
+    <storeAPI.Provider value={{ addMoreCard, addMoreList, updateListTitle, deleteCard }}>
       <TopBar />
       {/* <DragDropContext onDragEnd={onDragEnd}> */}
       <div className={classes.root}>
@@ -211,7 +209,6 @@ function Dashboard(props) {
         {dataAxios.map(task_list => { return <List list={task_list} key={task_list.id} /> })}
         <div>
         </div>
-
         <InputContainer type='list' />
       </div>
       {/* </DragDropContext> */}

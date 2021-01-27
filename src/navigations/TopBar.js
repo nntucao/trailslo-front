@@ -6,7 +6,7 @@ import SideMenu from './SideMenu';
 
 const useStyles = makeStyles((theme) => ({
     AppBar: {
-        background: 'green'
+        background: '#ff795c'
     },
     title: {
         flexGrow: 1

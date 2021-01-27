@@ -1,7 +1,9 @@
 import React, { useContext, useState } from 'react'
-import { Paper, CssBaseline, InputBase, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Paper, CssBaseline, InputBase, Typography, IconButton } from '@material-ui/core'
+import { makeStyles, fade } from '@material-ui/core/styles'
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Button } from '@material-ui/core'
 import Title from './Title'
 import Card from './Card'
@@ -30,6 +32,14 @@ const useStyle = makeStyles((theme) => ({
         '&:hover': {
             display: 'inline'
         }
+    },
+    btnDashboard: {
+        margin: theme.spacing(2),
+        background: '#f56f54',
+        color: '#fff',
+        '&:hover': {
+            background: fade('#f75737', 0.75)
+        }
     }
 }));
 
@@ -37,32 +47,35 @@ export default function Board({ uid }) {
     const classes = useStyle();
     const [open, setOpen] = useState(false);
     const [boardTitle, setBoardTitle] = useState('');
+    const [creatingBoard, setCreatingBoard] = useState('');
 
     const handleOnChange = (e) => {
         setBoardTitle(e.target.value);
     };
 
-    const handleOnBlur = () => {
+    const handleOnClick = () => {
         //updateBoardTitle(newBoardTitle, boardId);
-        setOpen(false);
+        //setOpen(false);
+        console.log('start creating board: ')
         axios({
             method: 'post',
             responseType: 'json',
             data: {
-              'board': {
-                name: boardTitle
-              }
+                'board': {
+                    name: boardTitle
+                }
             },
             url: `http://localhost:3001/api/v1/users/${uid}/boards`,
             validateStatus: (status) => {
-              return true;
+                return true;
             },
-          })
+        })
             .then(function (response) {
-              console.log('response post board request ', response);
+                console.log('response post board request ', response);
+                setCreatingBoard(response.data);
             })
             .catch(function (error) {
-              console.log('error post board request ', error);
+                console.log('error post board request ', error);
             });
     }
 
@@ -83,18 +96,37 @@ export default function Board({ uid }) {
                                 className: classes.input
                             }}
                             fullWidth
-                            onBlur={handleOnBlur} />
+                            onBlur={() => setOpen(false)} />
                     </div>)
                     :
                     (<div className={classes.editableTitleContainer}>
                         <Typography onClick={setOpen(!open)} className={classes.editableTitle}>
                             {boardTitle}
                         </Typography>
-                        
+
                     </div>)
                 }
-                
             </Paper>
+            <Button
+                className={classes.btnDashboard}
+                onClick={() => handleOnClick}>
+                Send
+            </Button>
+            {
+                creatingBoard ?
+                    (<IconButton className={classes.btnDashboard}
+                        component={Link}
+                        // onClick={handleBtnConfirm}
+                        to={{
+                            pathname: '/dashboard',
+                            state: {
+                                board_id: creatingBoard.id
+                            }
+                        }}>
+                        <ArrowForwardIcon /></IconButton>)
+                    :
+                    null
+            }
         </div>
     )
 }

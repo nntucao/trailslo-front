@@ -123,7 +123,7 @@ export default function Login() {
             id: board.id,
             name: board.name,
             is_archived: board.is_archived,
-            uid: board.uid
+            user_id: board.user_id
           }
         ));
         console.log('user boards retrieved: ', boards);
@@ -249,21 +249,7 @@ export default function Login() {
                   // </Button>
                   <div>
                     <Board name={boardTitle} uid={userId} /> 
-                    {
-                      redirectToDashBoard ?
-                        (<IconButton className={classes.btnDashboard}
-                          component={Link}
-                          onClick={handleBtnConfirm}
-                          to={{
-                            pathname: '/dashboard',
-                            state: {
-                              board_id: 1
-                            }
-                          }}>
-                          <ArrowForwardIcon/></IconButton>)
-                        :
-                        null
-                    }
+                    
                   </div>
                 )
             }

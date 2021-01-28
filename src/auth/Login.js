@@ -22,6 +22,7 @@ const clientId =
 
 const useStyles = makeStyles((theme) => ({
   boardsSpace: {
+    width: '100%',
     margin: theme.spacing(2)
   },
   btnDashboard: {
@@ -56,6 +57,14 @@ const useStyles = makeStyles((theme) => ({
       background: fade('#f75737', 0.75)
     }
   },
+  boardList: {
+    margin: theme.spacing(2),
+    background: '#f56f54',
+    color: '#fff',
+    '&:hover': {
+      background: fade('#f75737', 0.75)
+    }
+  },
   confirmDiv: {
     margin: theme.spacing(1, 2, 2, 2)
   }
@@ -69,12 +78,11 @@ export default function Login() {
   const [boardTitle, setBoardTitle] = useState('');
   const [openInput, setOpenInput] = useState(false);
   const [redirectToDashBoard, setRedirectToDashBoard] = useState(true);
+  
+  const urlAPI = `https://trailslo.herokuapp.com/api/v1/`; 
 
   const onSuccess = (res) => {
     console.log('Login Success: currentUser:', res.profileObj);
-    // alert(
-    //   `Logged in successfully welcome ${res.profileObj.name} 😍. \n`
-    // );
     var storedEmailsData = JSON.parse(localStorage["idEmailsDicData"]);
     if (Object.values(storedEmailsData).includes(res.profileObj.email)) {
       const idUser = Object.keys(storedEmailsData).find(key => storedEmailsData[key] === res.profileObj.email);
@@ -99,7 +107,7 @@ export default function Login() {
 
   const retrieveUser = async (idUser) => {
     console.log('start retrieving user: ', idUser);
-    await axios.get(`http://localhost:3001/api/v1/users/${idUser}`)
+    await axios.get(urlAPI + `users/${idUser}`)
       .then((resp) => {
         const user =
         {
@@ -116,7 +124,7 @@ export default function Login() {
 
   const retrieveUserBoards = async (idUser) => {
     console.log('start retrieving user boards:  ', idUser);
-    await axios.get(`http://localhost:3001/api/v1/users/${idUser}/boards`)
+    await axios.get(urlAPI + `users/${idUser}/boards`)
       .then((resp) => {
         const boards = resp.data.map((board) => (
           {
@@ -150,7 +158,7 @@ export default function Login() {
           email: email
         }
       },
-      url: `http://localhost:3001/api/v1/users`,
+      url: urlAPI + `users`,
       validateStatus: (status) => {
         return true;
       },
@@ -183,7 +191,7 @@ export default function Login() {
 
   const addBoard = () => {
     console.log('start creating board: ');
-    
+
   }
 
   return (
@@ -198,62 +206,61 @@ export default function Login() {
           </Router>
         </div>
         <div>
-          {userId ? null :
-            <GoogleLogin
-              clientId={clientId}
-              buttonText="Login"
-              onSuccess={onSuccess}
-              onFailure={onFailure}
-              // cookiePolicy={'single_host_origin'}
-              style={{ marginTop: '100px' }}
-              isSignedIn={true}
-            />
-          }
-          {
-            userName ?
+          {userId ?
+            <div>
               <div>
                 < Typography variant="h5" className={classes.boardsSpace}>Welcome {userName}</Typography>
               </div>
-              :
-              null
+              <div>
+                {console.log('boards while entering login: ', userBoards)}
+                {
+                  (userBoards.length > 0) ?
+                    (userBoards.map((board) => (
+                      <nav>
+                        <ul>
+                          <div>
+                            < Typography variant="h7" className={classes.boardsSpace}>Your Boards </Typography>
+                          </div>
+                          {console.log("board: ", board)}
+                          <Button component={Link} className={classes.boardList} variant="contained"
+                            to={{
+                              pathname: '/dashboard',
+                              state: {
+                                board_id: board.id
+                              }
+                            }}>{board.name}
+                          </Button>
+                        </ul>
+                      </nav>
+                    )))
+                    :
+                    (
+                      <div>
+                        <Board name={boardTitle} uid={userId} />
+                      </div>
+                    )
+                }
+              </div>
+            </div>
+            :
+            (<div>
+              <div>
+                < Typography variant="h5" className={classes.boardsSpace}>Please Login {userName}</Typography>
+              </div>
+              <div>
+                <GoogleLogin
+                  className={classes.boardsSpace}
+                  clientId={clientId}
+                  buttonText="Login"
+                  onSuccess={onSuccess}
+                  onFailure={onFailure}
+                  // cookiePolicy={'single_host_origin'}
+                  style={{ marginTop: '100px' }}
+                  isSignedIn={true}
+                />
+              </div>
+            </div>)
           }
-          <div>
-            {console.log('boards while entering login: ', userBoards)}
-            {
-              (userBoards.length > 0) ?
-                (userBoards.map((board) => (
-                  <nav>
-                    <ul>
-                      {console.log("board: ", board)}
-                      <Button component={Link} className={classes.boardsSpace} variant="contained" color="primary"
-                        to={{
-                          pathname: '/dashboard',
-                          state: {
-                            board_id: board.id
-                          }
-                        }}>{board.name}
-                      </Button>
-                    </ul>
-                  </nav>
-                )))
-                :
-                (
-                  // <Button
-                  //   component={Link}
-                  //   className={classes.boardsSpace}
-                  //   variant="contained" color="primary"
-                  //   to={{
-                  //     pathname: '/dashboard',
-                  //   }}>
-                  //   Create New Board
-                  // </Button>
-                  <div>
-                    <Board name={boardTitle} uid={userId} /> 
-                    
-                  </div>
-                )
-            }
-          </div>
         </div >
       </div >
     </storeAPI.Provider>

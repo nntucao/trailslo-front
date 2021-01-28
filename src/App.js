@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh'
   },
   image: {
-    // backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -57,8 +57,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   loginSpace: {
-    margin: theme.spacing(4),
-    float: 'right'
+    margin: theme.spacing(4)
   }
 }));
 

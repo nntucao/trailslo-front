@@ -10,6 +10,7 @@ import storeAPI from './utils/storeAPI';
 import { DragDropContext } from 'react-beautiful-dnd';
 import TopBar from './navigations/TopBar';
 import {useLocation} from "react-router-dom";
+import { ListItemSecondaryAction } from '@material-ui/core';
 
 const useStyle = makeStyles((theme) =>   ({
   root: {
@@ -30,14 +31,14 @@ function Dashboard(props) {
 
   //const [userId, setGoogleUser] = localStorage.getItem('userId'); 
 
-  //const urlAPI = `https://trailslo.herokuapp.com/`;
-  const urlLocal = `http://localhost:3001/api/v1/users/${userId}/boards/${board_id}/`;
+  const urlAPI = `https://trailslo.herokuapp.com/api/v1/users/${userId}/boards/${board_id}/`;
+  //const urlLocal = `http://localhost:3001/api/v1/users/${userId}/boards/${board_id}/`;
 
   useEffect(() => {
     console.log('now go to dashboard: ')
     console.log('localStorage in Dashboard: ', localStorage);
     const getTaskLists = async () => {
-      await axios.get(urlLocal + `task_lists`)
+      await axios.get(urlAPI + `task_lists`)
         .then((resp) => {
           const lists = resp.data.map((list) => (
             {
@@ -49,7 +50,7 @@ function Dashboard(props) {
             }
           ));
           console.log('lists after fetching: ', lists);
-          console.log('link: ', urlLocal + `task_lists`);
+          console.log('link: ', urlAPI + `task_lists`);
           setDataAxios(lists);
         })
         .catch(err => {
@@ -68,8 +69,11 @@ function Dashboard(props) {
       is_archived: false,
       position_in_tasklist: ''
     };
-    console.log('card id while adding: ', newCard.id)
-    const listAxios = dataAxios[listId - 1]; //numerotation of list id begins with 1 otherwise the table begins with 0
+    console.log('card id in addCard: ', newCard.id)
+    console.log('dataAxios in addCard: ', dataAxios)
+    console.log('listId in addCard: ', listId);
+    const listAxios = dataAxios.filter(e => e.id === listId)[0];
+    console.log('listAxios: ', listAxios);
     listAxios.task_cards = [...listAxios.task_cards, newCard];
 
     axios({
@@ -84,7 +88,7 @@ function Dashboard(props) {
           position_in_tasklist: ''
         }
       },
-      url: urlLocal + `task_lists/${listId}/task_cards`,
+      url: urlAPI + `task_lists/${listId}/task_cards`,
       validateStatus: (status) => {
         return true;
       },
@@ -113,14 +117,14 @@ function Dashboard(props) {
       responseType: 'json',
       data: {
         'task_list': {
-          board_id: 1,
+          board_id: board_id,
           is_archived: false,
           name: title,
           position_in_board: '',
           task_cards: []
         }
       },
-      url: urlLocal + `task_lists`,
+      url: urlAPI + `task_lists`,
       validateStatus: (status) => {
         return true;
       },
@@ -167,7 +171,7 @@ function Dashboard(props) {
           name: title
         }
       },
-      url: urlLocal + `task_lists/${listId}`,
+      url: urlAPI + `task_lists/${listId}`,
       validateStatus: (status) => {
         return true;
       },
@@ -180,14 +184,16 @@ function Dashboard(props) {
       });
   }
   const deleteCard = (listId, cardId) => {
-    dataAxios[listId - 1].task_cards = dataAxios[listId - 1].task_cards.filter((card) => card.id !== cardId);
+    const listAxios = dataAxios.filter(e => e.id === listId)[0];
+    console.log('listAxios in deleteCard: ', listAxios)
+    listAxios.task_cards = listAxios.task_cards.filter((card) => card.id !== cardId);
     const newState = [...dataAxios];
     setDataAxios(newState);
 
     axios({
       method: 'delete',
       responseType: 'json',
-      url: urlLocal + `task_lists/${listId}/task_cards/${cardId}`,
+      url: urlAPI + `task_lists/${listId}/task_cards/${cardId}`,
       validateStatus: (status) => {
         return true;
       },

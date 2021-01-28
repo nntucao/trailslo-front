@@ -5,13 +5,13 @@ import { Button } from '@material-ui/core';
 function Users() {
     const idEmailsDic = {};  
 
-    //const urlAPI = `https://trailslo.herokuapp.com/api/v1/`;
-    const urlLocal = `http://localhost:3001/api/v1/`;
+    const urlAPI = `https://trailslo.herokuapp.com/api/v1/`;
+    //const urlLocal = `http://localhost:3001/api/v1/`;
 
     useEffect(() => {
         console.log('useEffect is called: ');
         const getUsers = async () => {
-            await axios.get(urlLocal + `users`)
+            await axios.get(urlAPI + `users`)
                 .then((resp) => {
                     resp.data.map((user) => (
                         idEmailsDic[user.id] = user.email

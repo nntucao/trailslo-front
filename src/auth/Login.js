@@ -80,6 +80,7 @@ export default function Login() {
   const [redirectToDashBoard, setRedirectToDashBoard] = useState(true);
   
   const urlAPI = `https://trailslo.herokuapp.com/api/v1/`; 
+  //const urlLocal = `http://localhost:3001/api/v1/`;
 
   const onSuccess = (res) => {
     console.log('Login Success: currentUser:', res.profileObj);

@@ -49,8 +49,8 @@ export default function Board({ uid }) {
     const [boardTitle, setBoardTitle] = useState('');
     const [creatingBoard, setCreatingBoard] = useState('');
 
-    const urlAPI = `https://trailslo.herokuapp.com/api/v1/`;
-    //const urlLocal = `http://localhost:3001/api/v1/`;
+    //const urlAPI = `https://trailslo.herokuapp.com/api/v1/`;
+    const urlLocal = `http://localhost:3001/api/v1/`;
 
     const handleOnChange = (e) => {
         setBoardTitle(e.target.value);
@@ -68,7 +68,7 @@ export default function Board({ uid }) {
                     name: boardTitle
                 }
             },
-            url: urlAPI + `users/${uid}/boards`,
+            url: urlLocal + `users/${uid}/boards`,
             validateStatus: (status) => {
                 return true;
             },

@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
-import { Collapse, Button, InputBase, Paper, Typography, IconButton } from '@material-ui/core'
+import { Button, InputBase, Paper, Typography, IconButton } from '@material-ui/core'
 import axios from 'axios';
 import Dashboard from '../Dashboard'
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { GoogleLogin } from 'react-google-login';
 import { refreshTokenSetup } from '../utils/refreshToken';
 import { makeStyles, fade } from '@material-ui/core/styles';
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import ClearIcon from '@material-ui/icons/Clear';
 import storeAPI from '../utils/storeAPI';
-import { v4 as uuid } from 'uuid';
 import Board from '../components/List/Board';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import InputContainer from '../components/input/InputContainer';
-
-let theme = createMuiTheme();
-theme = responsiveFontSizes(theme);
 
 const clientId =
   '628527638852-jv08cufh46kjretiuvb70n4cmrdptfr1.apps.googleusercontent.com';
@@ -79,8 +71,8 @@ export default function Login() {
   const [openInput, setOpenInput] = useState(false);
   const [redirectToDashBoard, setRedirectToDashBoard] = useState(true);
   
-  const urlAPI = `https://trailslo.herokuapp.com/api/v1/`; 
-  //const urlLocal = `http://localhost:3001/api/v1/`;
+  //const urlAPI = `https://trailslo.herokuapp.com/api/v1/`; 
+  const urlLocal = `http://localhost:3001/api/v1/`;
 
   const onSuccess = (res) => {
     console.log('Login Success: currentUser:', res.profileObj);
@@ -108,7 +100,7 @@ export default function Login() {
 
   const retrieveUser = async (idUser) => {
     console.log('start retrieving user: ', idUser);
-    await axios.get(urlAPI + `users/${idUser}`)
+    await axios.get(urlLocal + `users/${idUser}`)
       .then((resp) => {
         const user =
         {
@@ -125,7 +117,7 @@ export default function Login() {
 
   const retrieveUserBoards = async (idUser) => {
     console.log('start retrieving user boards:  ', idUser);
-    await axios.get(urlAPI + `users/${idUser}/boards`)
+    await axios.get(urlLocal + `users/${idUser}/boards`)
       .then((resp) => {
         const boards = resp.data.map((board) => (
           {
@@ -159,7 +151,7 @@ export default function Login() {
           email: email
         }
       },
-      url: urlAPI + `users`,
+      url: urlLocal + `users`,
       validateStatus: (status) => {
         return true;
       },
@@ -220,7 +212,7 @@ export default function Login() {
                       <nav>
                         <ul>
                           <div>
-                            < Typography variant="h7" className={classes.boardsSpace}>Your Boards </Typography>
+                            < Typography variant="h6" className={classes.boardsSpace}>Your Boards </Typography>
                           </div>
                           {console.log("board: ", board)}
                           <Button component={Link} className={classes.boardList} variant="contained"

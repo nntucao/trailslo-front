@@ -25,15 +25,16 @@ export default function Card({ card, index }) {
      }
 
     return (
+        <div></div>
         // <Draggable draggableId={String(card.id)} index={index}>
-            // {(provided) => (
-                // <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-                    <Paper className={classes.card}>{card.name}
-                        <ClearIcon className={classes.clearBtn} onClick={handleCardDeleting} />
-                    </Paper>
-                // </div>
+        //     {(provided) => (
+        //         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+        //             <Paper className={classes.card}>{card.name}
+        //                 <ClearIcon className={classes.clearBtn} onClick={handleCardDeleting} />
+        //             </Paper>
+        //         </div>
 
-            // )}
+        //     )}
         // </Draggable>
-    );
+    )
 }

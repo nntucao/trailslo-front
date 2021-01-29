@@ -10,6 +10,7 @@ import storeAPI from './utils/storeAPI';
 import { DragDropContext } from 'react-beautiful-dnd';
 import TopBar from './navigations/TopBar';
 import { useLocation } from "react-router-dom";
+import { Droppable } from 'react-beautiful-dnd'
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -140,30 +141,56 @@ function Dashboard() {
     setDataAxios(newState);
   }
   const onDragEnd = (result) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
     console.log('destination ', destination, 'source ', source, 'draggableId ', draggableId);
     if (!destination) {
       return;
     }
+    
     const sourceList = dataAxios.filter(e => (e.id) == source.droppableId)[0];
     const destinationList = dataAxios.filter(e => e.id == destination.droppableId)[0];
+
+    if (type === 'list') {
+      const indexSourceList = dataAxios.indexOf(sourceList);
+      const indexDestinationList = dataAxios.indexOf(destinationList);
+      dataAxios[indexSourceList] = sourceList;
+      dataAxios[indexDestinationList] = sourceList;
+      const newState = [...dataAxios];
+      console.log('new state after switching: ', newState);
+      setDataAxios(newState);
+      return;
+    }
 
     console.log('sourceList', sourceList);
     console.log('destinationList', destinationList);
 
     const draggingCard = sourceList.task_cards.filter((card) => (card.id) == draggableId)[0];
-    console.log('draggingCard', draggingCard);
+    console.log('draggingCard name, id ', draggingCard.name, draggingCard.id);
 
     if (source.droppableId === destination.droppableId) {
       sourceList.task_cards.splice(source.index, 1);
+      console.log('draggingCard while splice name, id ', draggingCard.name, draggingCard.id);
       destinationList.task_cards.splice(destination.index, 0, draggingCard);
+
+      // console.log('index of source list: ', dataAxios.indexOf(sourceList));
+      const indexSourceList = dataAxios.indexOf(sourceList);
+      dataAxios[indexSourceList] = destinationList;
+      const newState = [...dataAxios];
+      setDataAxios(newState);
+    } else {
+      sourceList.task_cards.splice(source.index, 1); 
+      destinationList.task_cards.splice(destination.index, 0, draggingCard); 
+
+      const indexSourceList = dataAxios.indexOf(sourceList);
+      const indexDestinationList = dataAxios.indexOf(destinationList);
+      dataAxios[indexSourceList] = sourceList;
+      dataAxios[indexDestinationList] = destinationList;
+      const newState = [...dataAxios];
+      console.log('new state after switching: ', newState);
+      setDataAxios(newState);
     }
 
-    // console.log('index of source list: ', dataAxios.indexOf(sourceList));
-    // const indexSourceList = dataAxios.indexOf(sourceList);
-    // dataAxios[indexSourceList] = destinationList;
-    // const newState = [...dataAxios];
-    // setDataAxios(newState);
+
   }
 
   const updateListTitle = (title, listId) => {
@@ -217,13 +244,21 @@ function Dashboard() {
     <storeAPI.Provider value={{ addMoreCard, addMoreList, updateListTitle, deleteCard }}>
       <TopBar />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className={classes.root}>
-          {console.log('data after btn clicked: ', dataAxios)}
-          {dataAxios.map(task_list => { return <List list={task_list} key={task_list.id} /> })}
-          <div>
-          </div>
-          <InputContainer type='list' />
-        </div>
+        <Droppable droppableId="dashboard" type='list' direction='horizontal'>
+          {(provided) => (
+            <div 
+            className={classes.root} 
+            ref={provided.innerRef}
+            {...provided.droppableProps}>
+              {console.log('data after btn clicked: ', dataAxios)}
+              {dataAxios.map((task_list, index) => { return <List list={task_list} key={task_list.id} index={index} /> })}
+              <div>
+              </div>
+              <InputContainer type='list' />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </DragDropContext>
     </storeAPI.Provider>
   );

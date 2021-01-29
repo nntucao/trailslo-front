@@ -33,7 +33,7 @@ const useStyle = makeStyles((theme) => ({
     }
 }));
 
-export default function List({ list }) {
+export default function List({ list, index }) {
     const classes = useStyle();
     const { deleteCard } = useContext(storeAPI);
 
@@ -42,30 +42,35 @@ export default function List({ list }) {
     }
 
     return (
-        <div>
-            <Paper className={classes.root}>
-                <CssBaseline />
-                <Title title={list.name} listId={String(list.id)} />
-                <Droppable droppableId={String(list.id)}>
-                    {(provided) => (
-                        <div ref={provided.innerRef}  {...provided.droppableProps} className={classes.cardContainer}>
-                            {list.task_cards.map((card, index) => (
-                                <Draggable draggableId={String(card.id)} index={index}>
-                                    {(provided) => (
-                                        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-                                            <Paper className={classes.card}>{card.name}
-                                                <ClearIcon className={classes.clearBtn} onClick={() => handleCardDeleting(list.id, card.id)} />
-                                            </Paper>
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-                <InputContainer listId={list.id} type='card' />
-            </Paper>
-        </div>
+        <Draggable draggableId={String(list.id)} index={index} key={list.id}>
+            {(provided => (
+                <div {...provided.draggableProps} ref={provided.innerRef}>
+                <Paper className={classes.root} {...provided.dragHandleProps}>
+                    <CssBaseline />
+                    <Title title={list.name} listId={String(list.id)} />
+                    <Droppable droppableId={String(list.id)}>
+                        {(provided) => (
+                            <div ref={provided.innerRef}  {...provided.droppableProps} className={classes.cardContainer}>
+                                {list.task_cards.map((card, index) => (
+                                    <Draggable draggableId={String(card.id)} index={index} key={card.id}>
+                                        {(provided) => (
+                                            <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+                                                <Paper className={classes.card}>{card.name}
+                                                    <ClearIcon className={classes.clearBtn} onClick={() => handleCardDeleting(list.id, card.id)} />
+                                                </Paper>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                    <InputContainer listId={list.id} type='card' />
+                </Paper>
+            </div>
+            ))}
+        </Draggable>
+        
     )
 }

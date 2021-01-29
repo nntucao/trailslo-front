@@ -210,7 +210,6 @@ export default function Login() {
                   (userBoards.length > 0) ?
                     (userBoards.map((board) => (
                       <nav>
-                        <ul>
                           <div>
                             < Typography variant="h6" className={classes.boardsSpace}>Your Boards </Typography>
                           </div>
@@ -223,7 +222,6 @@ export default function Login() {
                               }
                             }}>{board.name}
                           </Button>
-                        </ul>
                       </nav>
                     )))
                     :
